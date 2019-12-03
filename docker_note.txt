@@ -1,0 +1,21 @@
+sudo docker run --detach --hostname domain.com -p 0.0.0.0:443:443 -p 0.0.0.0:8880:80 -p 0.0.0.0:2020:22   --name gitlab gitlab/gitlab-ce:latest
+
+git clone ssh://git@domain:8880/hahaproject.git
+
+
+sudo docker run --name mongoserver -e MONGO_INITDB_ROOT_PASSWORD_FILE=/run/secrets/mongo-root -d mongo
+
+docker run -d -p 27017-27019:27017-27019 --name mongo-server mongo:4.0.4
+
+#####################DOCKER-COMMAND#################################
+docker search ubuntu
+
+docker networking subsystem
+	is pluggable
+	using drivers
+	consist of:
+		bridge:
+			the default network drivers
+			is used when apps run standalone containers that need to communicate
+			providing isolation from containers, not connected to that bridge network
+			user-defined bridge network are best when you need multiple containers to communicate to the same docker host 

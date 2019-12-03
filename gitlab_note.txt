@@ -1,0 +1,1 @@
+docker run --detach --hostname sewadnguyen.com:2020 -p 0.0.0.0:443:443 -p 0.0.0.0:8880:80 -p 0.0.0.0:2020:22   --name gitlab gitlab/gitlab-ce:latest
