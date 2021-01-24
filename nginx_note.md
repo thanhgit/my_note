@@ -1,59 +1,94 @@
-###########BUILD NGINX FROM SOURCE
-# if nginx masked
+# BUILD NGINX FROM SOURCE
+
+## If nginx masked
+```
 sudo systemctl unmask nginx.service
+```
 
-# check version ubuntu
+## Check version ubuntu
+```
 lsb_release -ds 
+```
 
-# set datetime
+## Set datetime
+```
 timedatectl set-timezone 'Asia/Ho_Chi_Minh'
+```
 
-# update system
+## Update system    
+```
 sudo apt-get update && sudo apt upgrade -y
 sudo apt-get install -y build-essential git tree
+```
 
-# download source
+## Download source
+```
 wget https://nginx.org/download/nginx-1.15.0.tar.gz && tar zxvf nginx-1.15.0.tar.gz
 wget https://ftp.pcre.org/pub/pcre/pcre-8.42.tar.gz && tar xzvf pcre-8.42.tar.gz
 wget https://www.zlib.net/zlib-1.2.11.tar.gz && tar xzvf zlib-1.2.11.tar.gz
 wget https://www.openssl.org/source/openssl-1.1.0h.tar.gz && tar xzvf openssl-1.1.0h.tar.gz
+```
 
-# install optional nginx dependencies
+## Install optional nginx dependencies
+```
 sudo add-apt-repository -y ppa:maxmind/ppa
 sudo apt update && sudo apt upgrade -y 
 sudo apt install -y perl libperl-dev libgd3 libgd-dev libgeoip1 libgeoip-dev geoip-bin libxml2 libxml2-dev libxslt1.1 libxslt1-dev
+```
 
-# create man nginx
+## Create man nginx
+```
 sudo cp ~/nginx-1.15.0/man/nginx.8 /usr/share/man/man8
 sudo gzip /usr/share/man/man8/nginx.8
 ls /usr/share/man/man8/ | grep nginx.8.gz
+```
 
-# Check that Man page for NGINX is working:
+## Check that Man page for NGINX is working:
+```
 man nginx
+```
 
-# create symlink
+## create symlink
+```
 sudo ln -s /usr/lib/nginx/modules /etc/nginx/modules
+```
 
-# check nginx version
+## Check nginx version
+```
 nginx -V
+```
 
-# create nginx system group and user
+## create nginx system group and user
+```
 sudo adduser --system --home /nonexistent --shell /bin/false --no-create-home --disabled-login --disabled-password --gecos "nginx user" --group nginx
+```
 
-# check nginx
+## check nginx
+```
 nginx -t
+```
 
-# create cache directories for nginx
+## create cache directories for nginx
+```
 sudo mkdir -p /var/cache/nginx/client_temp /var/cache/nginx/fastcgi_temp /var/cache/nginx/proxy_temp /var/cache/nginx/scgi_temp /var/cache/nginx/uwsgi_temp
+```
 
-# set chown and chmod
+## Set chown and chmod
+```
 sudo chmod 700 /var/cache/nginx/*
 sudo chown nginx:root /var/cache/nginx/*
-# check again
-nginx -t
+```
 
-# create nginx systemd unit file
+## Check again
+```
+nginx -t
+```
+
+## Create nginx systemd unit file
+```
 sudo vi /etc/systemd/system/nginx.service
+```
+```
 ################
 [Unit]
 Description=nginx - high performance web server
@@ -72,18 +107,23 @@ ExecStop=/bin/kill -s TERM $MAINPID
 [Install]
 WantedBy=multi-user.target
 ################
+```
 
-# enable nginx
+## Enable nginx
+```
 sudo systemctl enable nginx.service
 sudo systemctl start nginx.service
+```
 
-
-# install optional nginx dependencies
+## Install optional nginx dependencies
+```
 sudo add-apt-repository -y ppa:maxmind/ppa
 sudo apt update && sudo apt upgrade -y 
 sudo apt install -y perl libperl-dev libgd3 libgd-dev libgeoip1 libgeoip-dev geoip-bin libxml2 libxml2-dev libxslt1.1 libxslt1-dev	
+```
 
-#
+## Compile nginx
+```
 ./configure --prefix=/etc/nginx \ 
             --sbin-path=/usr/sbin/nginx \ 
             --modules-path=/usr/lib/nginx/modules \ 
@@ -142,41 +182,58 @@ sudo apt install -y perl libperl-dev libgd3 libgd-dev libgeoip1 libgeoip-dev geo
             --with-openssl-opt=no-nextprotoneg \
             --with-debug
 
-
-##################################
+```
 
 - Basic configuration format:
+```
 <section> {
 	<directive> <parameters>;
 }
+```
 
 - global configuration directives 
-	user: user/ group under which the worker process run is configured
-	worker_processes: number of processes will be started, depends on the server environment, the disk subsystem, and the network infrastructure. Best practise is set equal numbers of processor cores of CPU-bounds loads
-	error_log: is where all errors is written
-	pid: this is file where main process is written
-	use: indicates which connection processing method should be used 
-	worker_connections: maximum number of connections that a worker process may have open
-###########
-# we want nginx to run as user 'www'
+	- user: user/ group under which the worker process run is configured
+	- worker_processes: number of processes will be started, depends on the server environment, the disk subsystem, and the network infrastructure. Best practise is set equal numbers of processor cores of CPU-bounds loads
+	- error_log: is where all errors is written
+	- pid: this is file where main process is written
+	- use: indicates which connection processing method should be used 
+	- worker_connections: maximum number of connections that a worker process may have open
+
+#### We want nginx to run as user 'www'
+```
 user www;
-# the load is CPU-bound and we have 12 cores
+```
+#### The load is CPU-bound and we have 12 cores
+```
 worker_processes 12;
-# explicitly specifying the path to the mandatory error log
+```
+#### Explicitly specifying the path to the mandatory error log
+```
 error_log /var/log/nginx/error.log;
-# also explicitly specifying the path to the pid file
+```
+#### Also explicitly specifying the path to the pid file
+```
 pid /var/run/nginx.pid;
-# sets up a new configuration context for the 'events' module
+```
+#### Sets up a new configuration context for the 'events' module
+```
 events {
-# we're on a Solaris-based system and have determined that nginx will stop responding to new requests over time with the default
-# connection-processing mechanism, so we switch to the secondbest
-	use /dev/poll;
-# the product of this number and the number of worker_processes indicates how many simultaneous connections per IP:port pair are accepted
+```
+#### We're on a Solaris-based system and have determined that nginx will stop responding to new requests over time with the default
+#### Connection-processing mechanism, so we switch to the secondbest
+```
+use /dev/poll;
+```
+#### The product of this number and the number of worker_processes indicates how many simultaneous connections per IP:port pair are accepted
+```
 	worker_connections 2048;
 }
-###########
-BEST PRACTISE
+```
 
-# count IP address in nginx access log
+## BEST PRACTISE
+
+### Count IP address in nginx access log
+```
 sudo awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -nr
 sudo cat /var/log/nginx/access.log | grep 190.104.220.x
+```

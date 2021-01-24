@@ -1,5 +1,6 @@
 
 # docker-compose.yml file
+```yml
 version: '3'
 services:
   mongo:
@@ -18,3 +19,4 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: password
+```
