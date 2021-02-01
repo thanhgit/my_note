@@ -62,5 +62,47 @@ git fetch origin
 - Branching allows 2 independent tracks through history to created and commited to without either modifying the other
 ![](./media/multiple_branches_git.png)
     - The HEAD pointer moved from the master to the chapter-two branch when using `git checkout chapter-two`
+- Overwrite these uncommited changes anyway
+```bash
+git checkout -f
+```
+```bash
+git stash push
+```
+- Pushing a local branch remotely
+```bash
+git branch -c demo
+git checkout demo
+git push --set-upstream origin chapter-two
+```
+- Deleting a remote branch before deleting a local branch
+```bash
+git push --delete origin chapter-two
+---
+# git push origin :chapter-two
+To https://github.com/GitInPractice/GitInPracticeRedux.git
+- [deleted] chapter-two
+```
+- Deleting the current local branch after merging 
+```bash
+git branch --delete chapter-two
+```
+- Merging current branch into master branch
+![](./media/merging_to_master_git.png)
+```bash
+git checkout master
+git merge chapter-two
+```
+- "Fast-forward merge" strategy. This means no merge commit was needed. The chapter-two commits were made on top of the master branch
+
+## Merge conflicts
+- A merge conflict occurs when both branches involved in the merge have changed the same part of the same file
+- When conflicts have been resolved, a <b>merge commit</b> can be made. This stores the two parent commits and the conflicts are resolved 
+
+## Rebasing
+- A rebase is a method of rewriting history, that is similar to a merge
+- A rebase involves changing the parent of a commit to point to another
+![](./media/rebasing_to_master_git.png)
+
 ## How to use `git tag`
 - A tag is similar to a branch, but it points to a single commit and remains pointing to the same commit even when new commits are made
