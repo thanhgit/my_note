@@ -66,7 +66,11 @@ git stash apply
 git stash clear
 ```
 
-## Assuming files are unchanged
+## Assuming files are unchanged and no-unchanged
 ```bash
 git update-index --assume-unchanged demo.txt
+git ls-files -v
+git update-index --assume-unchanged demo.txt
 ```
+
+
