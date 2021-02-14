@@ -11,7 +11,7 @@ git chekout master
 git merge doc/merging_tech
 ```
 
-## Merging with non fast-forward strategy
+## Merging with non fast-forward strategy (create merge commit)
 ```bash
 git checkout master
 git merge --no-ff doc/merging_tech
